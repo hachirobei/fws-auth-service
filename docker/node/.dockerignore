@@ -1,0 +1,2 @@
+# docker/node/.dockerignore
+node_modules/

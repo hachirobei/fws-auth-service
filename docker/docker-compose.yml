@@ -1,0 +1,36 @@
+# auth/docker/docker-compose.yml
+version: '3'
+
+services:
+  auth:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        PORT: ${AUTH_PORT}
+    ports:
+      - "${AUTH_PORT}:${AUTH_PORT}"
+    depends_on:
+      - auth-db
+    environment:
+      - NODE_ENV=development
+    networks:
+      - flood_shared_network
+  auth-db:
+    image: "mongo:latest"
+    ports:
+      - "${AUTH_DB_PORT}:${AUTH_DB_PORT}"
+    volumes:
+      - auth-mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    networks:
+      - flood_shared_network
+
+volumes:
+  auth-mongo-data:
+
+networks:
+  flood_shared_network:
+    external: true
