@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 require('dotenv').config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27018/auth'; 
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://user:password@mangodb-auth:27017/fws-auth'; 
 
 mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
@@ -10,12 +10,12 @@ mongoose.connect(MONGODB_URI, {
 });
 
 mongoose.connection.on('connected', () => {
-    console.log('Connected to mangodb-flood');
+    console.log('Connected to mangodb-auth');
     ensureAdminExists();
 });
 
 mongoose.connection.on('error', (err) => {
-    console.error('Failed to connect to mangodb-flood', err);
+    console.error('Failed to connect to mangodb-auth', err);
 });
 
 const ensureAdminExists = async () => {

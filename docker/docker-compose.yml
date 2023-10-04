@@ -7,7 +7,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        PORT: ${FWS_AUTH_SERVICE_PORT}
+        PORT: "${FWS_AUTH_SERVICE_PORT}"
     ports:
       - "${FWS_AUTH_SERVICE_PORT}:${FWS_AUTH_SERVICE_PORT}"
     depends_on:
@@ -19,12 +19,14 @@ services:
   mangodb-auth:
     image: "mongo:latest"
     ports:
-      - "${FWS_AUTH_SERVICE_DB_PORT}:${FWS_AUTH_SERVICE_DB_PORT}"
-    volumes:
-      - auth-mongo-data:/data/db
+      - "${FWS_AUTH_SERVICE_DB_PORT}:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: fws-auth
+    volumes:
+      - auth-mongo-data:/data/db
+      - ./mangodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     networks:
       - flood_shared_network
 
