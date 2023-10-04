@@ -7,19 +7,19 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
       args:
-        PORT: ${AUTH_PORT}
+        PORT: ${FWS_AUTH_SERVICE_PORT}
     ports:
-      - "${AUTH_PORT}:${AUTH_PORT}"
+      - "${FWS_AUTH_SERVICE_PORT}:${FWS_AUTH_SERVICE_PORT}"
     depends_on:
-      - auth-db
+      - mangodb-auth
     environment:
       - NODE_ENV=development
     networks:
       - flood_shared_network
-  auth-db:
+  mangodb-auth:
     image: "mongo:latest"
     ports:
-      - "${AUTH_DB_PORT}:${AUTH_DB_PORT}"
+      - "${FWS_AUTH_SERVICE_DB_PORT}:${FWS_AUTH_SERVICE_DB_PORT}"
     volumes:
       - auth-mongo-data:/data/db
     environment:
