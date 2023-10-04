@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 require('../database/mangodb-auth');
 
 app.use(express.json());
-app.use(authRoutes);
+app.use('/api',authRoutes);
 
 app.listen(PORT, () => {
     console.log(`fws-auth-service running on port ${PORT}`);
