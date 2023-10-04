@@ -26,3 +26,15 @@ exports.getUsers = async (req, res) => {
     const users = await User.find().select('-password');
     res.json(users);
 };
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndRemove(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+        res.json({ message: "User deleted successfully." });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting user.", error: error.message });
+    }
+};
