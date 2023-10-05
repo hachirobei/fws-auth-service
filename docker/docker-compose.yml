@@ -1,22 +1,22 @@
 # auth/docker/docker-compose.yml
-version: '3'
+version: '3.8'
 
 services:
   fws-auth-service:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-      args:
-        PORT: "${FWS_AUTH_SERVICE_PORT}"
-    ports:
-      - "${FWS_AUTH_SERVICE_PORT}:${FWS_AUTH_SERVICE_PORT}"
-    depends_on:
-      - mangodb-auth
-    environment:
-      - NODE_ENV=development
-    networks:
-      - flood_shared_network
+      build:
+        context: ..
+        dockerfile: docker/dockerfile
+      hostname: fws_auth_service
+      container_name: fws_auth_service
+      ports:
+        - "${FWS_AUTH_SERVICE_PORT}:${FWS_AUTH_SERVICE_PORT}"
+      depends_on:
+        - mangodb-auth
+      networks:
+        - flood_shared_network
+
   mangodb-auth:
+    container_name: mangodb-auth
     image: "mongo:latest"
     ports:
       - "${FWS_AUTH_SERVICE_DB_PORT}:27017"
