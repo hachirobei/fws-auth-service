@@ -5,7 +5,7 @@ services:
   fws-auth-service:
       build:
         context: ..
-        dockerfile: docker/dockerfile
+        dockerfile: docker/Dockerfile
       hostname: fws_auth_service
       container_name: fws_auth_service
       ports:
