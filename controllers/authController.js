@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const Token = require('../models/token');
 
 exports.registerUser = async (req, res) => {
 try {
@@ -15,10 +16,27 @@ try {
 exports.loginUser = async (req, res) => {
 const user = await User.findOne({ username: req.body.username });
 if (user && bcrypt.compareSync(req.body.password, user.password)) {
-        const token = jwt.sign({ id: user.id, username: user.username }, 'YOUR_SECRET_KEY', { expiresIn: '1h' });
+        // Save the token to the database
+        const expiration = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+        const newToken = new Token({ userId: user._id, token, expiration });
+        await newToken.save();
+
         res.json({ token });
     } else {
         res.status(400).send('Invalid credentials');
+    }
+};
+
+exports.logoutUser = async (req, res) => {
+    try {
+        // Find and remove the user's token based on some criteria
+        const deletedToken = await Token.findOneAndRemove({ userId: req.user.id });
+        if (!deletedToken) {
+            return res.status(404).json({ message: 'Token not found.' });
+        }
+        res.json({ message: 'User logged out successfully.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error logging out user.', error: error.message });
     }
 };
 
@@ -38,3 +56,4 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ message: "Error deleting user.", error: error.message });
     }
 };
+
