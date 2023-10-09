@@ -1,11 +1,14 @@
 const Token = require('../models/token'); // Import your Token model
 
 module.exports = async (req, res, next) => {
-    const token = req.headers['authorization'];
+    const authHeader = req.headers['authorization'];
 
-    if (!token) {
-        return res.status(401).json({ message: 'Token not provided.' });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Token not provided or in the wrong format.' });
     }
+
+    // Extract the token without the "Bearer " prefix
+    const token = authHeader.slice(7);
 
     try {
         // Check if the token exists in the database

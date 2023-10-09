@@ -14,14 +14,23 @@ try {
 };
 
 exports.loginUser = async (req, res) => {
-const user = await User.findOne({ username: req.body.username });
-if (user && bcrypt.compareSync(req.body.password, user.password)) {
+    const user = await User.findOne({ username: req.body.username });
+    
+    const secretKey = process.env.JWT_SECRET_KEY; 
+    
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
+        const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '1h' });
+
         // Save the token to the database
         const expiration = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
         const newToken = new Token({ userId: user._id, token, expiration });
-        await newToken.save();
 
-        res.json({ token });
+        try {
+            await newToken.save();
+            res.json({ token });
+        } catch (error) {
+            res.status(500).json({ message: 'Failed to save token to the database.', error: error.message });
+        }
     } else {
         res.status(400).send('Invalid credentials');
     }
