@@ -8,4 +8,6 @@ COPY . /usr/src/app/
 
 EXPOSE 3001
 
-CMD ["node", "src/index.js"]
+RUN npm install -g nodemon
+
+CMD ["nodemon", "src/index.js"]
